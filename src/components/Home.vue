@@ -42,15 +42,16 @@ export default {
   },
   created () {
     this.displayUserGames(this.userCallback)
-    this.fetchAllUserGames(this.allUserGamesCallback)
+    // this.fetchAllUserGames(this.allUserGamesCallback)
   },
   methods: {
     userCallback (response) {
       this.user = response
+      this.allUserGames = response.games
     },
-    allUserGamesCallback (response) {
-      this.allUserGames = response
-    },
+    // allUserGamesCallback (response) {
+    //   this.allUserGames = response
+    // },
     displayUserGames (callback) {
       const token = localStorage.getItem('padel-token')
       axios
@@ -62,19 +63,19 @@ export default {
         .then(response => {
           callback(response.data.data)
         })
-    },
-    fetchAllUserGames (callback) {
-      const token = localStorage.getItem('padel-token')
-      axios
-        .get('/fetch_user_games', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
-        .then(response => {
-          callback(response.data.data)
-        })
     }
+    // fetchAllUserGames (callback) {
+    //   const token = localStorage.getItem('padel-token')
+    //   axios
+    //     .get('/fetch_user_games', {
+    //       headers: {
+    //         Authorization: `Bearer ${token}`
+    //       }
+    //     })
+    //     .then(response => {
+    //       callback(response.data.data)
+    //     })
+    // }
   }
 }
 </script>

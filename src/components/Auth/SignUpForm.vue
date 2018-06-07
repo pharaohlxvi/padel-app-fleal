@@ -31,24 +31,26 @@
           <span v-show="errors.has('password')" class="is-danger">{{ errors.first('password') }}</span>
         </div>
 
-        <div class="field" :class="{ error: errors.has('age') }">
-          <label>Idade</label>
-          <input type="text" name="age" :class="{'input': true, 'is-danger': errors.has('age') }" v-model="age" v-validate="'required'" placeholder="Idade">
-          <span v-show="errors.has('age')" class="is-danger">{{ errors.first('age') }}</span>
-        </div>
-
-        <div class="ui form">
-          <div class="field" :class="{ error: errors.has('level') }">
-            <label>N&iacute;vel de Habilidade</label>
-            <select class="ui search dropdown" name="level" :class="{'input': true, 'is-danger': errors.has('level') }" v-model="level" v-validate="'required'">
-              <option value="">Selecione uma das op&ccedil;&otilde;es</option>
-              <option value="1">Iniciante</option>
-              <option value="2">Intemedi&aacute;rio</option>
-              <option value="3">Semiprofissional</option>
-              <option value="4">Profissional</option>
-            </select>
+        <div class="two fields"> <!-- AGE $ LEVEL -->
+          <div class="field" :class="{ error: errors.has('age') }">
+            <label>Idade</label>
+            <input type="text" name="age" :class="{'input': true, 'is-danger': errors.has('age') }" v-model="age" v-validate="'required'" placeholder="Idade">
+            <span v-show="errors.has('age')" class="is-danger">{{ errors.first('age') }}</span>
           </div>
-          <span v-show="errors.has('level')" class="is-danger">{{ errors.first('level') }}</span>
+
+            <!-- <div class="ui form"> -->
+          <div class="field" :class="{ error: errors.has('level') }">
+              <label>N&iacute;vel de Habilidade</label>
+              <select class="ui search dropdown" name="level" :class="{'input': true, 'is-danger': errors.has('level') }" v-model="level" v-validate="'required'">
+                <option value="">Selecione uma das op&ccedil;&otilde;es</option>
+                <option value="1">Iniciante</option>
+                <option value="2">Intemedi&aacute;rio</option>
+                <option value="3">Semiprofissional</option>
+                <option value="4">Profissional</option>
+              </select>
+            <!-- </div> -->
+            <span v-show="errors.has('level')" class="is-danger">{{ errors.first('level') }}</span>
+          </div>
         </div>
 
         <button class="fluid ui primary button" :disabled="!isFormValid">ENVIAR</button>

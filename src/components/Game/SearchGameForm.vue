@@ -11,33 +11,37 @@
       <h2 class="ui medium dividing header">Buscar Jogos</h2>
       <form class="ui attached segment form">
 
-        <!-- DATE SELECTOR -->
-        <div class="ui field" :class="{ error: errors.has('date') }">
-          <label><i class="calendar alternate outline icon"></i> Data (Clique para escolher)</label>
-          <v-date-picker mode='single' v-model='searchTerm.date' :attributes='attrs'></v-date-picker>
-          <!-- <input type="text" name="date" v-model="searchTerm.date" placeholder="Digite a data e o horário do jogo"> -->
-          <!-- <span v-show="errors.has('date')" class="is-danger">{{ errors.first('date') }}</span> -->
+        <div class="two fields"> <!-- DATE & TIME -->
+          <!-- DATE SELECTOR -->
+          <div class="ui field" :class="{ error: errors.has('date') }">
+            <label><i class="calendar alternate outline icon"></i> Data (Clique para escolher)</label>
+            <v-date-picker mode='single' v-model='searchTerm.date' :attributes='attrs'></v-date-picker>
+            <!-- <input type="text" name="date" v-model="searchTerm.date" placeholder="Digite a data e o horário do jogo"> -->
+            <!-- <span v-show="errors.has('date')" class="is-danger">{{ errors.first('date') }}</span> -->
+          </div>
+
+          <!-- TIME SELECTOR -->
+          <div class="ui field" :class="{ error: errors.has('time') }">
+            <label><i class="clock outline icon"></i> Hor&aacute;rio</label>
+            <input type="text" name="time" :class="{'input': true, 'is-danger': errors.has('time') }" v-model="searchTerm.time" placeholder="Exemplo: 20h00">
+            <span v-show="errors.has('time')" class="is-danger">{{ errors.first('time') }}</span>
+          </div>
         </div>
 
-        <!-- TIME SELECTOR -->
-        <div class="ui field" :class="{ error: errors.has('time') }">
-          <label><i class="clock outline icon"></i> Hor&aacute;rio</label>
-          <input type="text" name="time" :class="{'input': true, 'is-danger': errors.has('time') }" v-model="searchTerm.time" placeholder="Exemplo: 20h00">
-          <span v-show="errors.has('time')" class="is-danger">{{ errors.first('time') }}</span>
-        </div>
+        <div class="two fields"> <!-- VENUE & PRICE -->
+          <!-- VENUE SELECTOR -->
+          <div class="ui field" :class="{ error: errors.has('venue') }">
+            <label><i class="compass outline icon"></i> Local</label>
+            <input type="text" name="venue" :class="{'input': true, 'is-danger': errors.has('venue') }" v-model="searchTerm.venue" placeholder="Digite o local do jogo">
+            <span v-show="errors.has('venue')" class="is-danger">{{ errors.first('venue') }}</span>
+          </div>
 
-        <!-- VENUE SELECTOR -->
-        <div class="ui field" :class="{ error: errors.has('venue') }">
-          <label><i class="compass outline icon"></i> Local</label>
-          <input type="text" name="venue" :class="{'input': true, 'is-danger': errors.has('venue') }" v-model="searchTerm.venue" placeholder="Digite o local do jogo">
-          <span v-show="errors.has('venue')" class="is-danger">{{ errors.first('venue') }}</span>
-        </div>
-
-        <!-- PRICE SELECTOR -->
-        <div class="ui field" :class="{ error: errors.has('price') }">
-          <label><i class="money bill alternate outline icon"></i> Pre&ccedil;o (sem centavos)</label>
-          <input type="text" name="price" :class="{'input': true, 'is-danger': errors.has('price') }" v-model="searchTerm.price" placeholder="Exemplo: 20">
-          <span v-show="errors.has('price')" class="is-danger">{{ errors.first('price') }}</span>
+          <!-- PRICE SELECTOR -->
+          <div class="ui field" :class="{ error: errors.has('price') }">
+            <label><i class="money bill alternate outline icon"></i> Pre&ccedil;o (sem centavos)</label>
+            <input type="text" name="price" :class="{'input': true, 'is-danger': errors.has('price') }" v-model="searchTerm.price" placeholder="Exemplo: 20">
+            <span v-show="errors.has('price')" class="is-danger">{{ errors.first('price') }}</span>
+          </div>
         </div>
 
         <!-- AVAILABILITY CHECKBOX -->

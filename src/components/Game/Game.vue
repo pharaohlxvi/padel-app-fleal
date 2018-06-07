@@ -23,6 +23,12 @@
       <!-- <p>users applied = {{ applic_user }}</p> -->
 
       <div class="center aligned">
+        <div v-if="!isGameAdmin && hasApplied" class="ui">
+          <span class="ui red bottom right attached tiny label">Solicitação<br>realizada</span>
+        </div>
+        <div v-if="game.need_equip===1">
+          <span class="ui teal top left attached tiny label">Levar<br>raquete</span>
+        </div>
         <span class="ui header">{{ game.venue }}</span>
       </div>
 
@@ -37,6 +43,7 @@
           {{ available }} vagas restantes<br>
           Nível {{ avgLevel }}
         </span>
+
       </div>
 
       <!-- APAGAR JOGO (isGameAdmin) -->
@@ -64,10 +71,10 @@
         NÃO HÁ MAIS VAGAS
       </div>
 
-      <div v-if="!isGameAdmin && hasApplied" class="ui">
+      <!-- <div v-if="!isGameAdmin && hasApplied" class="ui">
         <a class="ui red bottom right attached label">Solicitação realizada</a>
         <p></p>
-      </div>
+      </div> -->
 
       <!-- <div v-if="!userGamesIds.includes(game.id) && !userGamesApplied.includes(game.id) && available && !requested" class="ui bottom attached button" @click.prevent="requestToJoinGame(game.id)">
       <div v-if="available && !requested" class="ui bottom attached button" @click.prevent="requestToJoinGame(game.id)">
