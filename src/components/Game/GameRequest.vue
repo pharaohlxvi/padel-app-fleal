@@ -1,7 +1,19 @@
 <template v-if="user.length && (level = !undefined) && game.length">
   <div class="ui raised segment yellow">
     <div class="card">
+
       <div class="content">
+
+        <div v-if="answeredRequest === 1" class="ui">
+          <a class="tiny ui green right ribbon label">Aceito</a>
+          <p></p>
+        </div>
+
+        <div class="ui" v-if="answeredRequest === 2">
+          <a class="tiny ui red right ribbon label">Rejeitado</a>
+          <p></p>
+        </div>
+
         <div><h3>{{ name }}</h3></div>
         <div class="right floated meta">
           {{ age }} anos
@@ -9,15 +21,16 @@
         <div class="description">
           Nível {{ level }}
         </div>
-
       </div>
-      <div class="extra content center aligned">
+
+      <div v-if="!answeredRequest" class="extra content center aligned">
         <div class="ui mini buttons">
-          <button class="ui red button">Rejeitar</button>
+          <button class="ui red button" @click="rejectRequest(game, user)">Rejeitar</button>
           <div class="or" data-text="ou"></div>
           <button class="ui green button" @click="acceptRequest(game, user)">Aceitar</button>
         </div>
       </div>
+
     </div>
   </div>
 
@@ -35,7 +48,8 @@ export default {
       age: '',
       level: '',
       qty_rates: '',
-      total_rates: ''
+      total_rates: '',
+      answeredRequest: 0
     }
   },
   props: {
@@ -80,7 +94,7 @@ export default {
         })
     },
     acceptRequest (gameId, userId) {
-      console.log('1) gameId = ' + JSON.stringify(gameId, null, 2))
+      this.answeredRequest = 1
       const token = localStorage.getItem('padel-token')
       axios
         .post(
@@ -92,9 +106,20 @@ export default {
             }
           }
         )
-        // .then(response => {
-
-        // })
+    },
+    rejectRequest (gameId, userId) {
+      this.answeredRequest = 2
+      const token = localStorage.getItem('padel-token')
+      axios
+        .post(
+          '/game/reject',
+          { game_id: gameId, user_id: userId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        )
     }
   }
 }

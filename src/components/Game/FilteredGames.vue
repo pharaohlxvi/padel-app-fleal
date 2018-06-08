@@ -11,6 +11,7 @@
             :key="game.id"
             :game="game"
             :allUserGames="allUserGames"
+            :fromSearch="fromSearch"
         />
     </div>
 </template>
@@ -35,6 +36,10 @@ export default {
     allUserGames: {
       type: Array,
       required: true
+    },
+    fromSearch: {
+      type: Boolean,
+      required: false
     }
   }
 }

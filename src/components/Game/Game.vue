@@ -23,7 +23,7 @@
       <!-- <p>users applied = {{ applic_user }}</p> -->
 
       <div class="center aligned">
-        <div v-if="!isGameAdmin && hasApplied" class="ui">
+        <div v-if="(!isGameAdmin && hasApplied) || madeRequest" class="ui">
           <span class="ui red bottom right attached tiny label">Solicitação<br>realizada</span>
         </div>
         <div v-if="game.need_equip===1">
@@ -52,17 +52,17 @@
       </div>
 
       <!-- SAIR DO JOGO (isPlaying) -->
-      <div v-if="isPlaying" class="ui bottom attached button" @click.prevent="leaveGame(game.id)">
+      <div v-if="isPlaying && !leftGame" class="ui bottom attached button" @click.prevent="leaveGame(game.id)">
         SAIR DO JOGO
       </div>
 
       <!-- PARTICIPAR DO JOGO (MODIFICAR FUNCAO PARA JOIN DIRETO) -->
-      <div v-else-if="available && isGameAdmin" class="ui bottom attached button" @click.prevent="requestToJoinGame(game.id)">
+      <div v-else-if="available && isGameAdmin && !joinedGame" class="ui bottom attached button" @click.prevent="joinGame(game.id)">
         PARTICIPAR DO JOGO
       </div>
 
       <!-- SOLICITAR PARTICIPAR (!hasApplied && available) -->
-      <div v-else-if="!hasApplied && available" class="ui bottom attached button" @click.prevent="requestToJoinGame(game.id)">
+      <div v-else-if="!hasApplied && available && !madeRequest" class="ui bottom attached button" @click.prevent="requestToJoinGame(game.id)">
         SOLICITAR PARTICIPAR
       </div>
 
@@ -96,7 +96,7 @@
       </div> -->
 
       <game-request
-        v-if="isGameAdmin && applic_user.length"
+        v-if="isGameAdmin && applic_user.length && !fromSearch"
         v-for="user in applic_user"
         :key="user"
         :user="user"
@@ -124,6 +124,11 @@ export default {
     allUserGames: {
       type: Array,
       required: true
+    },
+    fromSearch: {
+      type: Boolean,
+      required: false,
+      default: false
     }
     // authUser: {
     //   type: Object,
@@ -141,7 +146,10 @@ export default {
       applic_user: [],
       avgLevel: '',
       available: '',
-      requested: false
+      requested: false,
+      leftGame: false,
+      joinedGame: false,
+      madeRequest: false
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -255,6 +263,9 @@ export default {
         .then(response => {
           this.available--
           this.requested = true
+          this.madeRequest = true
+          this.joinedGame = true
+          this.leftGame = true
         })
     },
 
@@ -273,9 +284,13 @@ export default {
         .then(response => {
           this.userGamesIds.push(gameId)
           this.available--
+          this.joinedGame = true
+          this.leftGame = false
         })
     },
+
     leaveGame (gameId) {
+      console.log('1) gameId = ' + JSON.stringify(gameId, null, 2))
       const token = localStorage.getItem('padel-token')
       axios
         .post(
@@ -293,6 +308,8 @@ export default {
             this.userGamesIds.splice(index, 1)
           }
           this.available++
+          this.leftGame = true
+          this.joinedGame = false
         })
     },
     deleteGame (gameId) {

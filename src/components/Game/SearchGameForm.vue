@@ -61,7 +61,7 @@
         <!-- <pre>{{ allGames }}</pre> -->
 
         <div class="results">
-          <FilteredGames :filteredGames="filteredGames" :allUserGames="allUserGames" :authUser="user"/>
+          <FilteredGames :filteredGames="filteredGames" :allUserGames="allUserGames" :authUser="user" :fromSearch="fromSearch"/>
         </div>
 
       </form>
@@ -88,6 +88,10 @@ export default {
     },
     allUserGames: {
       type: Array,
+      required: true
+    },
+    fromSearch: {
+      type: Boolean,
       required: true
     }
   },

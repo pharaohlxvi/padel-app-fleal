@@ -1,6 +1,6 @@
 <template v-if="allGames.length && allUserGames.length && user.length">
 <div>
-  <SearchGameForm :allGames="allGames" :allUserGames="allUserGames"/>
+  <SearchGameForm :allGames="allGames" :allUserGames="allUserGames" :fromSearch="true"/>
 </div>
 </template>
 
