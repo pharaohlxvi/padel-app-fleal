@@ -1,10 +1,13 @@
 <template v-if="allUserGames.length && authUser.length">
-    <div class="ui feed">
-      <!-- <pre>{{ authUser.name }}</pre>
-      <pre>{{ allUserGames[0] }}</pre> -->
-        <filtered-games :authUser="authUser" :allUserGames.sync="allUserGames" :filteredGames.sync="allUserGames"
-        />
-    </div>
+  <div class="ui feed">
+
+    <filtered-games
+      :authUser="authUser"
+      :allUserGames.sync="allUserGames"
+      :filteredGames.sync="allUserGames"
+    />
+
+  </div>
 </template>
 
 <script>

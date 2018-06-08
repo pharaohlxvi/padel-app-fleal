@@ -8,7 +8,7 @@
       <AuthMenu/>
 
       <div class="ui segment">
-      <h2 class="ui medium dividing header">Log In</h2>
+      <h2 class="ui medium dividing header">Entre na sua conta</h2>
 
       <Notification :message="notification.message" :type="notification.type" v-if="notification.message"/>
 
@@ -19,11 +19,11 @@
         </div>
 
         <div class="field">
-          <label>Password</label>
+          <label>Senha</label>
           <input type="password" name="password" v-model="password" placeholder="Password" required>
         </div>
 
-        <button class="fluid ui primary button">LOG IN</button>
+        <button class="fluid ui primary button">ENTRAR</button>
 
       </form>
   </div>
@@ -31,7 +31,7 @@
       <div class="ui column grid">
         <div class="center aligned column">
           <p>
-            Don't have an account? <router-link to="/signup">Sign Up</router-link>
+            N&atilde;o possui conta? <router-link to="/signup">Cadastre-se</router-link>
           </p>
         </div>
       </div>

@@ -10,6 +10,9 @@
     <div class="ui segment">
       <h2 class="ui medium header">Pr&oacute;ximos Jogos</h2>
       <Games :authUser="user" :allUserGames.sync="allUserGames" />
+      <div v-if="allUserGames.length < 1">
+        <h3 class="ui header">Voc&ecirc; n&atilde;o possui nenhum jogo agendado</h3>
+      </div>
     </div>
 
   </div>
@@ -64,18 +67,6 @@ export default {
           callback(response.data.data)
         })
     }
-    // fetchAllUserGames (callback) {
-    //   const token = localStorage.getItem('padel-token')
-    //   axios
-    //     .get('/fetch_user_games', {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`
-    //       }
-    //     })
-    //     .then(response => {
-    //       callback(response.data.data)
-    //     })
-    // }
   }
 }
 </script>

@@ -62,6 +62,10 @@
 
         <div class="results">
           <FilteredGames :filteredGames="filteredGames" :allUserGames="allUserGames" :authUser="user" :fromSearch="fromSearch"/>
+
+          <div v-if="filteredGames.length < 1">
+            <h3 class="ui header">Nenhum Jogo Encontrado</h3>
+          </div>
         </div>
 
       </form>

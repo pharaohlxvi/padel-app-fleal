@@ -290,7 +290,6 @@ export default {
     },
 
     leaveGame (gameId) {
-      console.log('1) gameId = ' + JSON.stringify(gameId, null, 2))
       const token = localStorage.getItem('padel-token')
       axios
         .post(

@@ -1,19 +1,17 @@
 <template v-if="authUser.length && filteredGames.length && allUserGames.length">
-    <div class="ui feed">
-      <!-- <pre>{{ filteredGames }}</pre> -->
-      <!-- <pre>{{ authUser.name }}</pre> -->
-      <!-- <pre>{{ allUserGames[0] }}</pre> -->
-      <!-- <pre>{{ game[0] }}</pre> -->
-      <hr>
-        <!-- <pre>{{ authUser }}</pre> -->
-        <Game
-            v-for="game in filteredGames"
-            :key="game.id"
-            :game="game"
-            :allUserGames="allUserGames"
-            :fromSearch="fromSearch"
-        />
-    </div>
+  <div class="ui feed">
+
+    <hr>
+
+    <Game
+      v-for="game in filteredGames"
+      :key="game.id"
+      :game="game"
+      :allUserGames="allUserGames"
+      :fromSearch="fromSearch"
+    />
+
+  </div>
 </template>
 
 <script>
