@@ -53,7 +53,6 @@
   </div>
 
       <div class="ui positive message">
-        <i class="close icon"></i>
         <div class="header">
           Ainda n&atilde;o possui conta?
         </div>

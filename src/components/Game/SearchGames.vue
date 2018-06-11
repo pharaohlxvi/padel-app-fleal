@@ -35,8 +35,9 @@
           </div>
         </div>
 
+        <br><hr><br>
+
         <div class="ui center aligned grid">
-          <hr>
           <p class="content meta">Membro desde {{ currUser.created_at | joined }}</p>
           <br>
         </div>
@@ -56,7 +57,6 @@
 </template>
 
 <script>
-// import UserCard from '@/components/User/Profile/UserCard'
 import UserSidebar from '@/components/User/UserSidebar'
 import SearchGamesMenu from '@/components/Game/SearchGamesMenu'
 import axios from '../../axios-instance'
@@ -68,7 +68,6 @@ export default {
     SearchGameForm,
     SearchGamesMenu,
     UserSidebar
-    // UserCard
   },
   data () {
     return {

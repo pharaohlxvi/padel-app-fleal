@@ -31,7 +31,7 @@ export default {
     },
     countText: {
       type: String,
-      default: 'Mostrando {from} a {to} de {count} jogos|{count} jogos|1 jogo'
+      default: 'Mostrando {from} a {to} de {count} jogos|{count} jogos encontrados|1 jogo encontrado'
     },
     currentPage: {
       type: Number,

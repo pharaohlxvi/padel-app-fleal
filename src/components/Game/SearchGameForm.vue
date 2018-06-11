@@ -91,8 +91,6 @@
   </form>
 
   <div class="results">
-    <!-- <br> -->
-    <!-- <div class="ui container right aligned">{{ this.filteredGames.length }} jogos encontrados</div> -->
 
     <Pagination v-if="filteredGames.length" v-model="page" :items="filteredGames.length" :perPage="10" />
 
@@ -126,10 +124,6 @@ export default {
     }
   },
   props: {
-    // allGames: {
-    //   type: Array,
-    //   required: true
-    // },
     currUser: {
       type: Object,
       required: true
@@ -152,10 +146,7 @@ export default {
         price: '',
         available: '',
         ownGame: ''
-        // avg_level: ''
       },
-      // avgLevel: '',
-      // user: {},
       attrs: [
         {
           key: 'today',
@@ -176,19 +167,13 @@ export default {
     const token = localStorage.getItem('padel-token')
     return token ? next() : next('/login')
   },
-  // created () {
-  //   this.getUser()
-  // },
   watch: {
     searchTerm: {
       handler: function (val) {
-        // console.log('val = ' + JSON.stringify(val, null, 2))
-        // setTimeout(() => {
-        this.filterGames(val, this.filterGamesCallback)
-        // setTimeout(() => {
-        this.$emit('input', val)
-        // }, 1000)
-        // this.$emit('input', val)
+        setTimeout(() => {
+          this.filterGames(val, this.filterGamesCallback)
+          this.$emit('input', val)
+        }, 1000)
       },
       deep: true
     }

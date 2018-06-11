@@ -12,7 +12,6 @@ export default {
 
 <style>
     body {
-        /* background-color: #f7f7f7; */
         background-color: #D1C49C;
         padding-top: 20px;
         padding-bottom: 20px;

@@ -21,7 +21,7 @@
           {{ `${currUser.email}` }}
         </div>
 
-        <!-- <div class="statistic"> games -->
+        <!-- games -->
         <div class="ui center aligned grid container">
           <div class="center aligned statistic">
             <div class="label">
@@ -36,8 +36,9 @@
           </div>
         </div>
 
+        <br><hr><br>
+
         <div class="ui center aligned grid">
-          <hr>
           <p class="content meta">Membro desde {{ currUser.created_at | joined }}</p>
           <br>
         </div>
@@ -164,7 +165,6 @@
 </template>
 
 <script>
-// import UserCard from '@/components/User/Profile/UserCard'
 import Notification from '@/components/Notification'
 import UserSidebar from '@/components/User/UserSidebar'
 import axios from '../../axios-instance'
@@ -174,7 +174,6 @@ export default {
   components: {
     Notification,
     UserSidebar
-    // UserCard
   },
   data () {
     return {
@@ -250,7 +249,6 @@ export default {
     },
     updateGame () {
       const token = localStorage.getItem('padel-token')
-      console.log('1) token = ' + JSON.stringify(token, null, 2))
       axios
         .put(`/game/update/${this.id}`, {
           date: this.date,
@@ -267,7 +265,6 @@ export default {
           }
         })
         .then(response => {
-          console.log('2) response = ' + JSON.stringify(response.data.data, null, 2))
           // display success notification
           this.notification = Object.assign({}, this.notification, {
             message: response.data.message,

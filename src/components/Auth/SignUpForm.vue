@@ -82,7 +82,6 @@
     </div>
 
       <div class="ui positive message">
-        <i class="close icon"></i>
         <div class="header">
           J&aacute; possui uma conta?
         </div>
@@ -138,7 +137,6 @@ export default {
       axios
         .post('/signup', userData)
         .then(response => {
-          // save token in localstorage
           localStorage.setItem('padel-token', response.data.data.token)
           // redirect to user home
           this.$router.push('/')

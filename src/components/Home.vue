@@ -21,7 +21,7 @@
           {{ `${currUser.email}` }}
         </div>
 
-        <!-- <div class="statistic"> games -->
+        <!-- games -->
         <div class="ui center aligned grid container">
           <div class="center aligned statistic">
             <div class="label">
@@ -36,9 +36,9 @@
           </div>
         </div>
 
-        <!-- <div class="item" v-show="currUser.created_at"> created at -->
+        <br><hr><br>
+
         <div class="ui center aligned grid">
-          <hr>
           <p class="content meta">Membro desde {{ currUser.created_at | joined }}</p>
           <br>
         </div>
@@ -102,22 +102,8 @@ export default {
         })
         .then(response => {
           callback(response.data.data)
-          // console.log('2) response = ' + JSON.stringify(response.data.data, null, 2))
-          // this.currUser = response.data.data
         })
     }
-  //   displayUserGames (callback) {
-  //     const token = localStorage.getItem('padel-token')
-  //     axios
-  //       .get('/users/games', {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`
-  //         }
-  //       })
-  //       .then(response => {
-  //         callback(response.data.data)
-  //       })
-  //   }
   }
 }
 </script>
