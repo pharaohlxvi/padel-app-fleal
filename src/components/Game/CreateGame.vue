@@ -1,12 +1,53 @@
 <template>
 <div class="ui stackable grid vertically padded container">
 
-  <div class="two wide column"></div>
+  <user-sidebar :curr-user="currUser" class="float"/>
 
-  <div class="twelve wide column">
+  <div v-if="currUser" class="five wide column">
 
-    <UserSidebar/>
+    <img class="ui fluid image" src="../../assets/logo.png">
 
+    <div class="ui fluid raised card"> <!-- authUser Card -->
+
+      <div class="content">
+
+        <img class="left floated mini ui image" src="https://www.gravatar.com/avatar/default?s=200&r=pg&d=mm">
+
+        <div class="header"> <!-- name -->
+          {{ `${currUser.name}` }}
+        </div>
+
+        <div class="meta"> <!-- email -->
+          {{ `${currUser.email}` }}
+        </div>
+
+        <!-- <div class="statistic"> games -->
+        <div class="ui center aligned grid container">
+          <div class="center aligned statistic">
+            <div class="label">
+              Prticipando de
+            </div>
+          <div class="value">
+            <i class="blue hand point right outline icon"></i> {{ `${currUser.games.length}` }}
+          </div>
+            <div class="label">
+              Jogos
+            </div>
+          </div>
+        </div>
+
+        <div class="ui center aligned grid">
+          <hr>
+          <p class="content meta">Membro desde {{ currUser.created_at | joined }}</p>
+          <br>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="eleven wide column">
     <div class="ui segment">
       <h2 class="ui medium dividing header">Criar Jogo</h2>
 
@@ -23,7 +64,6 @@
         </div>
 
         <!-- TIME SELECTOR -->
-        <!-- <div class="ui form"> -->
         <div class="field" :class="{ error: errors.has('time') }">
           <label><i class="clock outline icon"></i> Hor&aacute;rio</label>
           <select class="ui fluid search dropdown" name="time" :class="{'input': true, 'is-danger': errors.has('time') }" v-model="time" v-validate="'required'">
@@ -59,15 +99,9 @@
             <option value="22h00">22h00</option>
             <option value="22h30">22h30</option>
           </select>
-          <!-- </div> -->
           <span v-show="errors.has('level')" class="is-danger">{{ errors.first('level') }}</span>
         </div>
 
-        <!-- <div class="ui field" :class="{ error: errors.has('time') }">
-          <label><i class="clock outline icon"></i> Hor&aacute;rio</label>
-          <input type="text" name="time" :class="{'input': true, 'is-danger': errors.has('time') }" v-model="time" placeholder="Exemplo: 20h00" v-validate="'required'">
-          <span v-show="errors.has('time')" class="is-danger">{{ errors.first('time') }}</span>
-        </div> -->
       </div>
 
       <div class="two fields"> <!-- VENUE & DURATION -->
@@ -79,7 +113,6 @@
         </div>
 
         <!-- DURATION SELECTOR -->
-        <!-- <div class="ui form"> -->
         <div class="field" :class="{ error: errors.has('duration') }">
           <label><i class="stopwatch icon"></i> Dura&ccedil;&atilde;o</label>
           <select class="ui search dropdown" name="duration" :class="{'input': true, 'is-danger': errors.has('duration') }" v-model="duration" v-validate="'required'">
@@ -93,16 +126,9 @@
             <option value="3h30">3h30</option>
             <option value="4h">4h</option>
           </select>
-          <!-- </div> -->
           <span v-show="errors.has('duration')" class="is-danger">{{ errors.first('duration') }}</span>
         </div>
       </div>
-
-      <!-- <div class="field" :class="{ error: errors.has('duration') }">
-        <label><i class="stopwatch icon"></i> Dura&ccedil;&atilde;o</label>
-        <input type="text" name="duration" :class="{'input': true, 'is-danger': errors.has('duration') }" v-model="duration" v-validate="'required'" placeholder="Exemplo: 1h00">
-        <span v-show="errors.has('duration')" class="is-danger">{{ errors.first('duration') }}</span>
-      </div> -->
 
       <div class="two fields"> <!-- PRICE & MAXIMUM PLAYERS -->
         <!-- PRICE SELECTOR -->
@@ -139,6 +165,7 @@
 </template>
 
 <script>
+import UserCard from '@/components/User/Profile/UserCard'
 import UserSidebar from '@/components/User/UserSidebar'
 import Notification from '@/components/Notification'
 import axios from '../../axios-instance'
@@ -148,7 +175,14 @@ export default {
   name: 'CreateGame',
   components: {
     Notification,
-    UserSidebar
+    UserSidebar,
+    UserCard
+  },
+  props: {
+    currUser: {
+      type: Object,
+      required: true
+    }
   },
   data () {
     return {
@@ -182,9 +216,6 @@ export default {
     isFormValid () {
       return Object.keys(this.fields).every(key => this.fields[key].valid)
     }
-    // canDeleteTweet () {
-    //     return this.game.user_id === this.authUser.id
-    // }
   },
   beforeRouteEnter (to, from, next) {
     const token = localStorage.getItem('padel-token')
@@ -208,7 +239,6 @@ export default {
       axios
         .post('/create_game', gameData, { headers: { Authorization: `Bearer ${token}` } })
         .then(response => {
-          this.game = {}
           this.$router.push('/')
         })
     }

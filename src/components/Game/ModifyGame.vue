@@ -1,18 +1,60 @@
-<template v-if="gameId.length">
+<template v-if="id.length">
 <div class="ui stackable grid vertically padded container">
 
-  <div class="two wide column"></div>
+  <user-sidebar :curr-user="currUser" class="float"/>
 
-  <div class="twelve wide column">
+  <div v-if="currUser" class="five wide column">
 
-    <UserSidebar />
+    <img class="ui fluid image" src="../../assets/logo.png">
+
+    <div class="ui fluid raised card"> <!-- authUser Card -->
+
+      <div class="content">
+
+        <img class="left floated mini ui image" src="https://www.gravatar.com/avatar/default?s=200&r=pg&d=mm">
+
+        <div class="header"> <!-- name -->
+          {{ `${currUser.name}` }}
+        </div>
+
+        <div class="meta"> <!-- email -->
+          {{ `${currUser.email}` }}
+        </div>
+
+        <!-- <div class="statistic"> games -->
+        <div class="ui center aligned grid container">
+          <div class="center aligned statistic">
+            <div class="label">
+              Prticipando de
+            </div>
+          <div class="value">
+            <i class="blue hand point right outline icon"></i> {{ `${currUser.games.length}` }}
+          </div>
+            <div class="label">
+              Jogos
+            </div>
+          </div>
+        </div>
+
+        <div class="ui center aligned grid">
+          <hr>
+          <p class="content meta">Membro desde {{ currUser.created_at | joined }}</p>
+          <br>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="eleven wide column">
 
     <div class="ui segment">
       <h2 class="ui medium dividing header">Modificar Jogo</h2>
 
         <Notification :message="notification.message" :type="notification.type" v-if="notification.message" />
 
-        <form class="ui form" @submit.prevent="updateGame(gameId)">
+        <form class="ui form" @submit.prevent="updateGame(id)">
 
           <div class="two fields"> <!-- DATE & TIME -->
             <!-- DATE SELECTOR -->
@@ -22,7 +64,6 @@
             </div>
 
             <!-- TIME SELECTOR -->
-            <!-- <div class="ui form"> -->
             <div class="field" :class="{ error: errors.has('time') }">
               <label><i class="clock outline icon"></i> Hor&aacute;rio</label>
               <select class="ui search dropdown" name="time" :class="{'input': true, 'is-danger': errors.has('time') }" v-model="time" v-validate="'required'">
@@ -63,12 +104,6 @@
             </div>
           </div>
 
-          <!-- <div class="field" :class="{ error: errors.has('time') }">
-            <label><i class="clock outline icon"></i> Hor&aacute;rio</label>
-            <input type="text" name="time" :class="{'input': true, 'is-danger': errors.has('time') }" v-model="time" placeholder="Exemplo: 20h00" v-validate="'required'">
-            <span v-show="errors.has('time')" class="is-danger">{{ errors.first('time') }}</span>
-          </div> -->
-
           <div class="two fields"> <!-- VENUE & DURATION -->
             <!-- VENUE SELECTOR -->
             <div class="field" :class="{ error: errors.has('venue') }">
@@ -78,7 +113,6 @@
             </div>
 
             <!-- DURATION SELECTOR -->
-            <!-- <div class="ui form"> -->
             <div class="field" :class="{ error: errors.has('duration') }">
               <label><i class="stopwatch icon"></i> Dura&ccedil;&atilde;o</label>
               <select class="ui search dropdown" name="duration" :class="{'input': true, 'is-danger': errors.has('duration') }" v-model="duration" v-validate="'required'">
@@ -92,15 +126,9 @@
                 <option value="3h30">3h30</option>
                 <option value="4h">4h</option>
               </select>
-              <!-- </div> -->
               <span v-show="errors.has('duration')" class="is-danger">{{ errors.first('duration') }}</span>
             </div>
 
-            <!-- <div class="field" :class="{ error: errors.has('duration') }">
-              <label><i class="stopwatch icon"></i> Dura&ccedil;&atilde;o</label>
-              <input type="text" name="duration" :class="{'input': true, 'is-danger': errors.has('duration') }" v-model="duration" v-validate="'required'" placeholder="Exemplo: 1h00">
-              <span v-show="errors.has('duration')" class="is-danger">{{ errors.first('duration') }}</span>
-            </div> -->
           </div>
 
           <div class="two fields"> <!-- PRICE & MAXIMUM PLAYERS -->
@@ -136,6 +164,7 @@
 </template>
 
 <script>
+import UserCard from '@/components/User/Profile/UserCard'
 import Notification from '@/components/Notification'
 import UserSidebar from '@/components/User/UserSidebar'
 import axios from '../../axios-instance'
@@ -144,7 +173,8 @@ export default {
   name: 'ModifyGame',
   components: {
     Notification,
-    UserSidebar
+    UserSidebar,
+    UserCard
   },
   data () {
     return {
@@ -177,8 +207,12 @@ export default {
     }
   },
   props: {
-    gameId: {
+    id: {
       type: Number,
+      required: true
+    },
+    currUser: {
+      type: Object,
       required: true
     }
   },
@@ -192,14 +226,14 @@ export default {
     return token ? next() : next('/login')
   },
   created () {
-    this.game_id = parseInt(this.gameId)
+    this.game_id = parseInt(this.id)
     this.fetchGame(this.game_id)
   },
   methods: {
-    fetchGame (gameId) {
+    fetchGame (id) {
       const token = localStorage.getItem('padel-token')
       axios
-        .get(`/fetch_game/${gameId}`, {
+        .get(`/fetch_game/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -211,7 +245,6 @@ export default {
           this.duration = response.data.data.duration
           this.need_equip = response.data.data.need_equip
           this.price = response.data.data.price
-          // this.avg_level = response.data.data.avg_level
           this.max_num = response.data.data.max_num
         })
     },
@@ -219,14 +252,13 @@ export default {
       const token = localStorage.getItem('padel-token')
       console.log('1) token = ' + JSON.stringify(token, null, 2))
       axios
-        .put(`/game/update/${this.gameId}`, {
+        .put(`/game/update/${this.id}`, {
           date: this.date,
           time: this.time,
           venue: this.venue,
           duration: this.duration,
           need_equip: this.need_equip,
           price: this.price,
-          // avg_level: this.avg_level,
           max_num: this.max_num
         },
         {

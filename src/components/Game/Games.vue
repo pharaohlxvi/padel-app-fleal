@@ -1,10 +1,9 @@
-<template v-if="allUserGames.length && authUser.length">
+<template v-if="authUser.length">
   <div class="ui feed">
 
     <filtered-games
-      :authUser="authUser"
-      :allUserGames.sync="allUserGames"
-      :filteredGames.sync="allUserGames"
+      :auth-user="authUser"
+      :filtered-games="authUser.games"
     />
 
   </div>
@@ -21,10 +20,6 @@ export default {
   props: {
     authUser: {
       type: Object,
-      required: true
-    },
-    allUserGames: {
-      type: Array,
       required: true
     }
   }

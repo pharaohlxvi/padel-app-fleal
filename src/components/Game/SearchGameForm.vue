@@ -1,93 +1,85 @@
-<template v-if="allGames.length && user.length && allUserGames">
-<div class="ui stackable grid vertically padded container">
+<template v-if="allUserGames.length">
+<div class="ui segment">
+  <h2 class="ui medium dividing header">Buscar Jogos</h2>
+  <form class="ui attached segment form">
 
-  <div class="two wide column"></div>
+    <div class="two fields"> <!-- DATE & TIME -->
+      <!-- DATE SELECTOR -->
+      <div class="ui field" :class="{ error: errors.has('date') }">
+        <label><i class="calendar alternate outline icon"></i> Data (Clique para escolher)</label>
+        <v-date-picker mode='single' v-model='searchTerm.date' :attributes='attrs' show-caps></v-date-picker>
+      </div>
 
-  <div class="twelve wide column">
+      <!-- TIME SELECTOR -->
+      <div class="ui field" :class="{ error: errors.has('time') }">
+        <label><i class="clock outline icon"></i> Hor&aacute;rio</label>
+        <input type="text" name="time" :class="{'input': true, 'is-danger': errors.has('time') }" v-model="searchTerm.time" placeholder="Exemplo: 20h00">
+        <span v-show="errors.has('time')" class="is-danger">{{ errors.first('time') }}</span>
+      </div>
+    </div>
 
-    <UserSidebar/>
+    <div class="two fields"> <!-- VENUE & PRICE -->
+      <!-- VENUE SELECTOR -->
+      <div class="ui field" :class="{ error: errors.has('venue') }">
+        <label><i class="compass outline icon"></i> Local</label>
+        <input type="text" name="venue" :class="{'input': true, 'is-danger': errors.has('venue') }" v-model="searchTerm.venue" placeholder="Digite o local do jogo">
+        <span v-show="errors.has('venue')" class="is-danger">{{ errors.first('venue') }}</span>
+      </div>
 
-    <div class="ui segment">
-      <h2 class="ui medium dividing header">Buscar Jogos</h2>
-      <form class="ui attached segment form">
+      <!-- PRICE SELECTOR -->
+      <div class="ui field" :class="{ error: errors.has('price') }">
+        <label><i class="money bill alternate outline icon"></i> Pre&ccedil;o (sem centavos)</label>
+        <input type="text" name="price" :class="{'input': true, 'is-danger': errors.has('price') }" v-model="searchTerm.price" placeholder="Exemplo: 20">
+        <span v-show="errors.has('price')" class="is-danger">{{ errors.first('price') }}</span>
+      </div>
+    </div>
 
-        <div class="two fields"> <!-- DATE & TIME -->
-          <!-- DATE SELECTOR -->
-          <div class="ui field" :class="{ error: errors.has('date') }">
-            <label><i class="calendar alternate outline icon"></i> Data (Clique para escolher)</label>
-            <v-date-picker mode='single' v-model='searchTerm.date' :attributes='attrs'></v-date-picker>
-            <!-- <input type="text" name="date" v-model="searchTerm.date" placeholder="Digite a data e o horário do jogo"> -->
-            <!-- <span v-show="errors.has('date')" class="is-danger">{{ errors.first('date') }}</span> -->
+    <div class="ui fields">
+        <div class="ui grouped">
+          <h5 class="ui header center aligned">Selecione conforme desejado:</h5>
+          <!-- AVAILABILITY CHECKBOX -->
+          <div class="two fields">
+          <div class="ui checkbox field" :class="{ error: errors.has('available') }">
+            <input type="checkbox" tabindex="0" name="available" :class="{'input': true, 'is-danger': errors.has('available') }" v-model="searchTerm.available">
+            <span v-show="errors.has('available')" class="is-danger">{{ errors.first('available') }}</span>
+            <label>Mostrar Somente Jogos com Vagas Dispon&iacute;veis</label>
           </div>
 
-          <!-- TIME SELECTOR -->
-          <div class="ui field" :class="{ error: errors.has('time') }">
-            <label><i class="clock outline icon"></i> Hor&aacute;rio</label>
-            <input type="text" name="time" :class="{'input': true, 'is-danger': errors.has('time') }" v-model="searchTerm.time" placeholder="Exemplo: 20h00">
-            <span v-show="errors.has('time')" class="is-danger">{{ errors.first('time') }}</span>
+          <!-- OWN GAME CHECKBOX -->
+          <div class="ui checkbox field" :class="{ error: errors.has('ownGame') }">
+            <input type="checkbox" tabindex="0" name="ownGame" :class="{'input': true, 'is-danger': errors.has('ownGame') }" v-model="searchTerm.ownGame">
+            <span v-show="errors.has('ownGame')" class="is-danger">{{ errors.first('ownGame') }}</span>
+            <label>Mostrar Somente Jogos os quais Administra</label>
           </div>
-        </div>
-
-        <div class="two fields"> <!-- VENUE & PRICE -->
-          <!-- VENUE SELECTOR -->
-          <div class="ui field" :class="{ error: errors.has('venue') }">
-            <label><i class="compass outline icon"></i> Local</label>
-            <input type="text" name="venue" :class="{'input': true, 'is-danger': errors.has('venue') }" v-model="searchTerm.venue" placeholder="Digite o local do jogo">
-            <span v-show="errors.has('venue')" class="is-danger">{{ errors.first('venue') }}</span>
-          </div>
-
-          <!-- PRICE SELECTOR -->
-          <div class="ui field" :class="{ error: errors.has('price') }">
-            <label><i class="money bill alternate outline icon"></i> Pre&ccedil;o (sem centavos)</label>
-            <input type="text" name="price" :class="{'input': true, 'is-danger': errors.has('price') }" v-model="searchTerm.price" placeholder="Exemplo: 20">
-            <span v-show="errors.has('price')" class="is-danger">{{ errors.first('price') }}</span>
-          </div>
-        </div>
-
-        <!-- AVAILABILITY CHECKBOX -->
-        <div class="ui checkbox field" :class="{ error: errors.has('available') }">
-          <input type="checkbox" tabindex="0" name="available" :class="{'input': true, 'is-danger': errors.has('available') }" v-model="searchTerm.available">
-          <span v-show="errors.has('available')" class="is-danger">{{ errors.first('available') }}</span>
-          <label>Mostrar Somente Jogos com Vagas Dispon&iacute;veis</label>
-        </div>
-
-        <!-- OWN GAME CHECKBOX -->
-        <div class="ui checkbox field" :class="{ error: errors.has('ownGame') }">
-          <input type="checkbox" tabindex="0" name="ownGame" :class="{'input': true, 'is-danger': errors.has('ownGame') }" v-model="searchTerm.ownGame">
-          <span v-show="errors.has('ownGame')" class="is-danger">{{ errors.first('ownGame') }}</span>
-          <label>Mostrar Somente Jogos os quais Administra</label>
-        </div>
-
-        <!-- <pre>{{ allGames }}</pre> -->
-
-        <div class="results">
-          <FilteredGames :filteredGames="filteredGames" :allUserGames="allUserGames" :authUser="user" :fromSearch="fromSearch"/>
-
-          <div v-if="filteredGames.length < 1">
-            <h3 class="ui header">Nenhum Jogo Encontrado</h3>
           </div>
         </div>
 
-      </form>
+    </div>
+  </form>
+  <div class="results">
+    <br>
+    <div class="ui container right aligned">{{ this.filteredGames.length }} jogos encontrados</div>
+    <FilteredGames :filteredGames="filteredGames" :authUser="currUser" :fromSearch="fromSearch"/>
+    <div v-if="!filteredGames.length">
+      <h3 class="ui segment center aligned header">Selecione acima seus crit&eacute;rios de busca</h3>
+      <br>
     </div>
   </div>
 </div>
 </template>
 
 <script>
-import UserSidebar from '@/components/User/UserSidebar'
 import FilteredGames from '@/components/Game/FilteredGames'
 import axios from '../../axios-instance'
 import moment from 'moment'
 
 export default {
   components: {
-    FilteredGames,
-    UserSidebar
+    FilteredGames
   },
   props: {
-    allGames: {
-      type: Array,
+    currUser: {
+      type: Object,
       required: true
     },
     allUserGames: {
@@ -104,12 +96,11 @@ export default {
       filteredGames: [],
       searchTerm: {
         venue: '',
-        date: null,
+        date: '',
         price: '',
         available: '',
         ownGame: ''
       },
-      user: {},
       attrs: [
         {
           key: 'today',
@@ -129,44 +120,44 @@ export default {
     const token = localStorage.getItem('padel-token')
     return token ? next() : next('/login')
   },
-  created () {
-    this.getUser()
-  },
   watch: {
     searchTerm: {
       handler: function (val) {
-        this.filterGames()
+        // console.log('val = ' + JSON.stringify(val, null, 2))
+        // setTimeout(() => {
+        this.filterGames(val, this.filterGamesCallback)
+        // setTimeout(() => {
         this.$emit('input', val)
+        // }, 1000)
+        // this.$emit('input', val)
       },
       deep: true
     }
   },
   methods: {
-    filterGames: function () {
-      if (this.filteredGames.length === 0) { this.filteredGames = this.allGames }
-      if (this.searchTerm.date) {
-        var searchDate = moment(this.searchTerm.date).format('YYYY-MM-DD')
-      }
-      this.filteredGames = this.allGames.filter(game => {
+    filterGamesCallback (response, val) {
+      this.filteredGames = response.filter(game => {
         return (
-          (game.venue.toLowerCase().search(this.searchTerm.venue.toLowerCase()) >= 0) &&
-          (this.searchTerm.date === null || game.date.search(searchDate) >= 0) &&
-          (!game.price || game.price.toString().search(this.searchTerm.price) >= 0) &&
-          (!this.searchTerm.available || game.max_num - game.curr_num > 0) &&
-          (!this.searchTerm.ownGame || (game.user_id === this.user.id))
+          (!val.available || game.max_num - game.curr_num > 0) &&
+          (!val.ownGame || (game.user_id === this.currUser.id))
         )
       })
     },
-    getUser () {
+
+    filterGames: function (val, callback) {
       const token = localStorage.getItem('padel-token')
+      if (this.filteredGames.length === 0) { this.filteredGames = this.allUserGames }
+      if (val.date) {
+        val.date = moment(val.date).format('YYYY-MM-DD')
+      }
       axios
-        .get('/users/games', {
+        .post('/games/searched', val, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         })
         .then(response => {
-          this.user = response.data.data
+          callback(response.data.data, val)
         })
     }
   }

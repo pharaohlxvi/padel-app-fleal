@@ -28,26 +28,32 @@ export default new Router({
       component: LogInForm
     },
     {
-      path: '/:username',
+      path: '/:email',
       component: UserProfile,
       props: true
     },
     {
       path: '/create/game',
+      name: 'createGame',
+      props: true,
       component: CreateGame
     },
     {
-      path: '/game/modify/:gameId',
+      path: '/game/update/:id',
       name: 'modifyGame',
       props: true,
       component: ModifyGame
     },
     {
       path: '/search/games',
+      name: 'searchGames',
+      props: true,
       component: SearchGames
     },
     {
       path: '/settings/profile',
+      name: 'userProfileSettings',
+      props: true,
       component: UserProfileSettings
     },
     {

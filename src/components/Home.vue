@@ -1,23 +1,65 @@
-<template v-if="allUserGames.length && user.length">
-<div class="ui stackable grid vertically padded container">
+<template>
+<div v-if="currUser" class="ui stackable grid vertically padded container">
 
-  <div class="two wide column"></div>
+  <user-sidebar :curr-user="currUser" class="float"/>
 
-  <div class="twelve wide column">
+  <div v-if="currUser" class="five wide column">
 
-    <UserSidebar/>
+    <img class="ui fluid image" src="../assets/logo.png">
 
-    <div class="ui segment">
-      <h2 class="ui medium header">Pr&oacute;ximos Jogos</h2>
-      <Games :authUser="user" :allUserGames.sync="allUserGames" />
-      <div v-if="allUserGames.length < 1">
-        <h3 class="ui header">Voc&ecirc; n&atilde;o possui nenhum jogo agendado</h3>
+    <div class="ui fluid raised card"> <!-- authUser Card -->
+
+      <div class="content">
+
+        <img class="left floated mini ui image" src="https://www.gravatar.com/avatar/default?s=200&r=pg&d=mm">
+
+        <div class="header"> <!-- name -->
+          {{ `${currUser.name}` }}
+        </div>
+
+        <div class="meta"> <!-- email -->
+          {{ `${currUser.email}` }}
+        </div>
+
+        <!-- <div class="statistic"> games -->
+        <div class="ui center aligned grid container">
+          <div class="center aligned statistic">
+            <div class="label">
+              Prticipando de
+            </div>
+          <div class="value">
+            <i class="blue hand point right outline icon"></i> {{ `${currUser.games.length}` }}
+          </div>
+            <div class="label">
+              Jogos
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="item" v-show="currUser.created_at"> created at -->
+        <div class="ui center aligned grid">
+          <hr>
+          <p class="content meta">Membro desde {{ currUser.created_at | joined }}</p>
+          <br>
+        </div>
+
       </div>
     </div>
 
   </div>
 
-  <div class="two wide column"></div>
+  <div class="eleven wide column">
+
+    <div class="ui segment">
+      <h2 class="ui medium header">Pr&oacute;ximos Jogos</h2>
+      <Games :auth-user="currUser" />
+      <div class="ui segment center aligned" v-if="currUser.games.length < 1">
+        <h3 class="ui header">Voc&ecirc; n&atilde;o possui nenhum jogo agendado</h3>
+      </div>
+      <br>
+    </div>
+
+  </div>
 
 </div>
 </template>
@@ -35,38 +77,47 @@ export default {
   },
   data () {
     return {
-      user: {},
-      allUserGames: []
+      currUser: ''
     }
   },
   beforeRouteEnter (to, from, next) {
     const token = localStorage.getItem('padel-token')
     return token ? next() : next('/login')
   },
-  created () {
-    this.displayUserGames(this.userCallback)
-    // this.fetchAllUserGames(this.allUserGamesCallback)
+  mounted () {
+    this.fetchAuthenticatedUser(this.userCallback)
   },
   methods: {
     userCallback (response) {
-      this.user = response
-      this.allUserGames = response.games
+      this.currUser = response
     },
-    // allUserGamesCallback (response) {
-    //   this.allUserGames = response
-    // },
-    displayUserGames (callback) {
+    fetchAuthenticatedUser (callback) {
       const token = localStorage.getItem('padel-token')
+
       axios
-        .get('/users/games', {
+        .get('/account/me', {
           headers: {
             Authorization: `Bearer ${token}`
           }
         })
         .then(response => {
           callback(response.data.data)
+          // console.log('2) response = ' + JSON.stringify(response.data.data, null, 2))
+          // this.currUser = response.data.data
         })
     }
+  //   displayUserGames (callback) {
+  //     const token = localStorage.getItem('padel-token')
+  //     axios
+  //       .get('/users/games', {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`
+  //         }
+  //       })
+  //       .then(response => {
+  //         callback(response.data.data)
+  //       })
+  //   }
   }
 }
 </script>

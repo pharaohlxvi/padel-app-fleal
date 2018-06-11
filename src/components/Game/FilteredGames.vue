@@ -1,15 +1,15 @@
-<template v-if="authUser.length && filteredGames.length && allUserGames.length">
+<template v-if="authUser.length">
   <div class="ui feed">
 
-    <hr>
+    <hr><br>
 
-    <Game
-      v-for="game in filteredGames"
-      :key="game.id"
-      :game="game"
-      :allUserGames="allUserGames"
-      :fromSearch="fromSearch"
-    />
+      <Game
+        v-for="game in filteredGames"
+        :key="game.id"
+        :game="game"
+        :auth-user="authUser"
+        :fromSearch="fromSearch"
+      />
 
   </div>
 </template>
@@ -29,10 +29,6 @@ export default {
     },
     authUser: {
       type: Object,
-      required: true
-    },
-    allUserGames: {
-      type: Array,
       required: true
     },
     fromSearch: {

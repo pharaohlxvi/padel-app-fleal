@@ -1,11 +1,35 @@
 <template>
 <div class="ui stackable grid vertically padded container">
 
-  <div class="two wide column"></div>
+  <auth-header class="float" />
 
-  <div class="twelve wide column">
+  <div class="five wide column">
+    <div class="ui segment header">
+      <h1 class="ui center aligned icon header">
+        <i class="circular blue address card icon"></i>
+        Universidade Luterana do Brasil<br>
+        <h2 class="ui center aligned">Junho/2018<br>Porto Alegre</h2>
+        <h3 class="ui center aligned">Aluno:<br>Fabr&iacute;cio Bertol Leal</h3>
+        <h4 class="ui center aligned">Contatos:</h4>
+      </h1>
+        <div class="ui two column grid raised segment">
+          <div class="ui center aligned column">
+            <a href="https://www.linkedin.com/in/fabricioleal/">
+              <i class="big linkedin icon"></i>
+              <p class="center aligned meta">LinkedIN</p>
+            </a>
+          </div>
+          <div class="ui center aligned column">
+            <a href="https://github.com/pharaohlxvi/">
+              <i class="big github icon"></i>
+              <p class="center aligned meta">GitHub</p>
+            </a>
+          </div>
+        </div>
+    </div>
+  </div>
 
-      <AuthMenu/>
+  <div class="eleven wide column">
 
       <div class="ui segment">
       <h2 class="ui medium dividing header">Entre na sua conta</h2>
@@ -28,13 +52,14 @@
       </form>
   </div>
 
-      <div class="ui column grid">
-        <div class="center aligned column">
-          <p>
-            N&atilde;o possui conta? <router-link to="/signup">Cadastre-se</router-link>
-          </p>
+      <div class="ui positive message">
+        <i class="close icon"></i>
+        <div class="header">
+          Ainda n&atilde;o possui conta?
         </div>
+        <p><b><router-link to="/signup">Cadastre-se</router-link></b> agora mesmo e encontre seus parceiros de Padel!</p>
       </div>
+
     </div>
   </div>
 </template>
@@ -42,13 +67,13 @@
 <script>
 import Notification from '@/components/Notification'
 import axios from '../../axios-instance'
-import AuthMenu from '@/components/Auth/AuthMenu'
+import AuthHeader from '@/components/Auth/AuthHeader'
 
 export default {
   name: 'LogInForm',
   components: {
     Notification,
-    AuthMenu
+    AuthHeader
   },
   data () {
     return {

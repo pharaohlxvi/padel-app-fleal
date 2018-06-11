@@ -1,11 +1,61 @@
 <template>
 <div class="ui stackable grid vertically padded container">
 
-  <div class="two wide column"></div>
+  <UserSettingsMenu class="float"/>
 
-  <div class="twelve wide column">
+  <div v-if="currUser" class="five wide column">
 
-    <UserSettingsMenu/>
+    <div class="ui centered card"> <!-- authUser Card -->
+
+      <div class="content">
+
+        <img class="right floated mini ui image" src="https://www.gravatar.com/avatar/default?s=200&r=pg&d=mm">
+
+        <div class="header"> <!-- name -->
+          {{ `${currUser.name}` }}
+        </div>
+
+        <div class="meta"> <!-- email -->
+          {{ `${currUser.email}` }}
+        </div>
+
+        <div class="statistic"> <!-- games -->
+          <div class="label">
+            Participando de
+          </div>
+          <div class="value">
+            <i class="hand point right outline icon"></i> {{ `${currUser.games.length}` }}
+          </div>
+          <div class="label">
+            Jogos
+          </div>
+        </div>
+
+        <div class="statistic"> <!-- applications -->
+          <div class="label">
+            Aguardando
+          </div>
+          <div class="value">
+            <i class="hand point right outline icon"></i> {{ `${currUser.applications.length}` }}
+          </div>
+          <div class="label">
+            Jogos
+          </div>
+        </div>
+
+        <div class="item" v-show="currUser.created_at"> <!-- created at -->
+          <i class="calendar icon"></i>
+          <p class="content">
+            Desde {{ currUser.created_at | joined }}
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="eleven wide column">
 
       <div class="ui segment">
         <h2 class="ui dividing header">Modificar Senha</h2>
@@ -48,6 +98,12 @@ export default {
   components: {
     Notification,
     UserSettingsMenu
+  },
+  props: {
+    currUser: {
+      type: Object,
+      required: true
+    }
   },
   data () {
     return {

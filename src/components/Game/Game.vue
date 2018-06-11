@@ -1,4 +1,4 @@
-<template v-if="game.length && authUser.length && allUserGames.length && user.games.length">
+<template v-if="game.length && authUser.length">
   <div class="ui centered raised card">
     <div v-if="gameDeleted" class="content">
       <div class="ui bottom attached button">
@@ -7,20 +7,11 @@
     </div>
 
     <div v-else class="content">
-      <router-link :to="{ name: 'modifyGame', params: {gameId: game.id} }">
+      <router-link :to="{ name: 'modifyGame', params: {id: game.id, currUser: authUser} }">
         <a v-if="isGameAdmin" class="ui grey right corner label">
           <i class="settings icon"></i>
         </a>
       </router-link>
-
-      <!-- <pre>{{ game }}</pre> -->
-      <!-- <pre>{{ allUserGames[0] }}</pre> -->
-      <!-- <pre>{{ userGamesIds }}</pre> -->
-      <!-- <pre>{{ userGamesApplied }}</pre> -->
-      <!-- <pre>{{ gameHasApplications }}</pre> -->
-      <!-- <pre>{{ gameApplications }}</pre> -->
-      <!-- <p>isAdmin = {{ isGameAdmin }}</p> -->
-      <!-- <p>users applied = {{ applic_user }}</p> -->
 
       <div class="center aligned">
         <div v-if="(!isGameAdmin && hasApplied) || madeRequest" class="ui">
@@ -33,21 +24,39 @@
       </div>
 
       <div class="center aligned meta">
-        <br v-if="!game.price"/><br v-if="!game.price"/>
-        <span v-if="game.duration">{{ game.duration}}</span>
-        <div class="center aligned description">
-          <p v-if="game.price">R$ {{ game.price }},00/h</p>
-        </div>
+        <span><i class="calendar icon"></i> {{ game.date | date('DD/MM/YYYY') }} às {{ game.time }}</span>
+
+        <br v-if="!game.price"/><br v-if="!game.price"/><br>
+
+        <span v-if="game.duration">Duração: {{ game.duration}}</span>
+
+        <span v-if="game.price">R$ {{ game.price }},00/h</span>
+
+        <br>
+
         <span>
           <i class="user icon"></i>
           {{ available }} vagas restantes<br>
           Nível {{ avgLevel }}
         </span>
 
+        <div class="ui blue basic tiny labels">
+
+          <span class="class ui header">Jogadores Inscritos</span><br>
+          <Players
+            v-for="player in gamePlayers"
+            :key="player.id"
+            :player="player"
+            :currUser="authUser"
+          />
+          <br>
+
+        </div>
+
       </div>
 
       <!-- APAGAR JOGO (isGameAdmin) -->
-      <div v-if="isGameAdmin" class="ui bottom attached button" @click.prevent="deleteGame(game.id)">
+      <div v-if="isGameAdmin && !fromSearch" class="ui bottom attached button" @click.prevent="deleteGame(game.id)">
         APAGAR JOGO
       </div>
 
@@ -57,7 +66,7 @@
       </div>
 
       <!-- PARTICIPAR DO JOGO (MODIFICAR FUNCAO PARA JOIN DIRETO) -->
-      <div v-else-if="available && isGameAdmin && !joinedGame" class="ui bottom attached button" @click.prevent="joinGame(game.id)">
+      <div v-else-if="available && isGameAdmin && !joinedGame && !isPlaying" class="ui bottom attached button" @click.prevent="joinGame(game.id)">
         PARTICIPAR DO JOGO
       </div>
 
@@ -66,34 +75,10 @@
         SOLICITAR PARTICIPAR
       </div>
 
-      <!-- NÃO HÁ MAIS VAGAS -->
+      <!-- NÃO HÁ MAIS VAGAS (!hasApplied && !available) -->
       <div v-else-if="!hasApplied && !available" class="ui bottom attached button">
         NÃO HÁ MAIS VAGAS
       </div>
-
-      <!-- <div v-if="!isGameAdmin && hasApplied" class="ui">
-        <a class="ui red bottom right attached label">Solicitação realizada</a>
-        <p></p>
-      </div> -->
-
-      <!-- <div v-if="!userGamesIds.includes(game.id) && !userGamesApplied.includes(game.id) && available && !requested" class="ui bottom attached button" @click.prevent="requestToJoinGame(game.id)">
-      <div v-if="available && !requested" class="ui bottom attached button" @click.prevent="requestToJoinGame(game.id)">
-        <i class="add icon"></i>
-        Solicitar Participar
-      </div>
-      <div v-else-if="available === 0" class="ui bottom attached button" @click.prevent="leaveGame(game.id)">
-        Não há mais vagas!<br>Clique para sair.
-      </div>
-      <div v-else-if="available === 0" class="ui bottom attached button">
-        Não há mais vagas!
-      </div>
-      <div v-else-if="isGameAdmin" class="ui bottom attached button" @click.prevent="deleteGame(game.id)">
-        Apagar Jogo
-      </div>
-      <div v-else-if="userGamesIds.includes(game.id)" class="ui bottom attached button" @click.prevent="leaveGame(game.id)">
-      <div class="ui bottom attached button" @click.prevent="leaveGame(game.id)">
-        Você já está nesse jogo! Clique para sair.
-      </div> -->
 
       <game-request
         v-if="isGameAdmin && applic_user.length && !fromSearch"
@@ -110,38 +95,33 @@
 <script>
 import axios from '../../axios-instance'
 import GameRequest from '@/components/Game/GameRequest'
+import Players from '@/components/Game/Players'
 
 export default {
   name: 'Game',
   components: {
-    GameRequest
+    GameRequest,
+    Players
   },
   props: {
     game: {
       type: Object,
       required: true
     },
-    allUserGames: {
-      type: Array,
-      required: true
-    },
     fromSearch: {
       type: Boolean,
       required: false,
       default: false
+    },
+    authUser: {
+      type: Object,
+      required: true
     }
-    // authUser: {
-    //   type: Object,
-    //   required: true
-    // }
   },
   data: function () {
     return {
-      user: {},
       userGamesIds: [],
       userGamesApplied: [],
-      // gameApplications: [],
-      // gameHasApplications: false,
       gameDeleted: false,
       applic_user: [],
       avgLevel: '',
@@ -149,7 +129,8 @@ export default {
       requested: false,
       leftGame: false,
       joinedGame: false,
-      madeRequest: false
+      madeRequest: false,
+      gamePlayers: []
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -157,13 +138,13 @@ export default {
     return token ? next() : next('/login')
   },
   created () {
-    this.getUserGames(this.userCallback)
     this.getGamesWithApplication(this.appliedCallback)
+    this.fetchGamePlayers(this.game.id)
     this.formatInfo()
   },
   computed: {
     isGameAdmin () {
-      return this.game.user_id === this.user.id
+      return this.game.user_id === this.authUser.id
     },
     isPlaying () {
       return this.userGamesIds.includes(this.game.id)
@@ -171,31 +152,8 @@ export default {
     hasApplied () {
       return this.userGamesApplied.includes(this.game.id)
     }
-  //   gameHasApplication () {
-  //     // console.log('userGamesApplied = ' + JSON.stringify(this.userGamesApplied, null, 2))
-  //     // console.log('game.id = ' + JSON.stringify(this.game.id, null, 2))
-  //     // console.log('allUserGames = ' + JSON.stringify(this.allUserGames, null, 2))
-  //     // console.log('userGamesApplied = ' + JSON.stringify(this.userGamesApplied, null, 2))
-  //     console.log('gameApplications = ' + JSON.stringify(this.gameApplications, null, 2))
-  //     console.log('gameHasApplications = ' + JSON.stringify(this.gameApplications, null, 2))
-  //     // console.log('user.games = ' + JSON.stringify(this.user.games, null, 2))
-  //     if (this.gameApplications.length) {
-  //       return this.gameHasApplications === true
-  //     }
-  //   }
   },
   methods: {
-    userCallback (response) {
-      this.user = response
-      // Stores the IDs of all games the user is applied and accepted in var userGamesIds
-      for (let i = 0; i < this.user.games.length; i++) {
-        this.userGamesIds.push(this.user.games[i].id)
-      }
-      // Stores all ids of games the current user has applied and not been accepted yet in userGamesApplied
-      for (let i = 0; i < this.user.applications.length; i++) {
-        this.userGamesApplied.push(this.user.applications[i].id)
-      }
-    },
     appliedCallback (response) {
       var gameApplications = []
       for (let i = 0; i < response.length; i++) {
@@ -208,7 +166,14 @@ export default {
         }
       }
     },
+
     formatInfo () {
+      for (let i = 0; i < this.authUser.games.length; i++) {
+        this.userGamesIds.push(this.authUser.games[i].id)
+      }
+      for (let i = 0; i < this.authUser.applications.length; i++) {
+        this.userGamesApplied.push(this.authUser.applications[i].id)
+      }
       if (this.game.avg_level <= 2) {
         this.avgLevel = 'Iniciante'
       } else if (this.game.avg_level <= 3) {
@@ -221,20 +186,19 @@ export default {
       this.available = this.game.max_num - this.game.curr_num
     },
 
-    getUserGames (callback) {
+    fetchGamePlayers (gameId) {
       const token = localStorage.getItem('padel-token')
       axios
-        .get('/users/games', {
+        .get(`/fetch_game/${gameId}`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         })
         .then(response => {
-          callback(response.data.data)
+          this.gamePlayers = response.data.data.users
         })
     },
 
-    // MAN AT WORK
     getGamesWithApplication (callback) {
       const token = localStorage.getItem('padel-token')
       axios
@@ -311,6 +275,7 @@ export default {
           this.joinedGame = false
         })
     },
+
     deleteGame (gameId) {
       const token = localStorage.getItem('padel-token')
       const deleteConfirmed = confirm('Confirma?')
