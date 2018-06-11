@@ -108,6 +108,10 @@ export default {
       type: Object,
       required: true
     },
+    // allUserGames: {
+    //   type: Array,
+    //   required: true
+    // },
     fromSearch: {
       type: Boolean,
       required: false,
@@ -120,8 +124,11 @@ export default {
   },
   data: function () {
     return {
+      // user: {},
       userGamesIds: [],
       userGamesApplied: [],
+      // gameApplications: [],
+      // gameHasApplications: false,
       gameDeleted: false,
       applic_user: [],
       avgLevel: '',
@@ -138,6 +145,7 @@ export default {
     return token ? next() : next('/login')
   },
   created () {
+    // this.getUserGames(this.userCallback)
     this.getGamesWithApplication(this.appliedCallback)
     this.fetchGamePlayers(this.game.id)
     this.formatInfo()
@@ -148,12 +156,26 @@ export default {
     },
     isPlaying () {
       return this.userGamesIds.includes(this.game.id)
+      // return this.authUser.games.includes(this.game)
     },
     hasApplied () {
       return this.userGamesApplied.includes(this.game.id)
+      // return this.authUser.applications.includes(this.game)
     }
   },
   methods: {
+    // userCallback (response) {
+    //   this.user = response
+    //   // Stores the IDs of all games the user is applied and accepted in var userGamesIds
+    //   for (let i = 0; i < this.user.games.length; i++) {
+    //     this.userGamesIds.push(this.user.games[i].id)
+    //   }
+    //   // Stores all ids of games the current user has applied and not been accepted yet in userGamesApplied
+    //   for (let i = 0; i < this.user.applications.length; i++) {
+    //     this.userGamesApplied.push(this.user.applications[i].id)
+    //   }
+    // },
+
     appliedCallback (response) {
       var gameApplications = []
       for (let i = 0; i < response.length; i++) {
@@ -168,12 +190,15 @@ export default {
     },
 
     formatInfo () {
+      // console.log('this.user.length = ' + JSON.stringify(this.authUser.length, null, 2))
       for (let i = 0; i < this.authUser.games.length; i++) {
         this.userGamesIds.push(this.authUser.games[i].id)
       }
+      // console.log('userGamesIds = ' + JSON.stringify(this.authUserGamesIds, null, 2))
       for (let i = 0; i < this.authUser.applications.length; i++) {
         this.userGamesApplied.push(this.authUser.applications[i].id)
       }
+      // console.log('userGamesApplied = ' + JSON.stringify(this.userGamesApplied, null, 2))
       if (this.game.avg_level <= 2) {
         this.avgLevel = 'Iniciante'
       } else if (this.game.avg_level <= 3) {
@@ -186,6 +211,19 @@ export default {
       this.available = this.game.max_num - this.game.curr_num
     },
 
+    // getUserGames (callback) {
+    //   const token = localStorage.getItem('padel-token')
+    //   axios
+    //     .get('/users/games', {
+    //       headers: {
+    //         Authorization: `Bearer ${token}`
+    //       }
+    //     })
+    //     .then(response => {
+    //       callback(response.data.data)
+    //     })
+    // },
+
     fetchGamePlayers (gameId) {
       const token = localStorage.getItem('padel-token')
       axios
@@ -195,6 +233,9 @@ export default {
           }
         })
         .then(response => {
+          // for (let i = 0; i < response.data.data.users.length; i++) {
+          //   this.gamePlayersIds.push(response.data.data.users[i].id)
+          // }
           this.gamePlayers = response.data.data.users
         })
     },

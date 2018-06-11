@@ -8,6 +8,8 @@
       <div class="ui field" :class="{ error: errors.has('date') }">
         <label><i class="calendar alternate outline icon"></i> Data (Clique para escolher)</label>
         <v-date-picker mode='single' v-model='searchTerm.date' :attributes='attrs' show-caps></v-date-picker>
+        <!-- <input type="text" name="date" v-model="searchTerm.date" placeholder="Digite a data e o horário do jogo"> -->
+        <!-- <span v-show="errors.has('date')" class="is-danger">{{ errors.first('date') }}</span> -->
       </div>
 
       <!-- TIME SELECTOR -->
@@ -35,8 +37,23 @@
     </div>
 
     <div class="ui fields">
+      <!-- LEVEL SELECTOR -->
+      <!-- <div class="six wide field" :class="{ error: errors.has('avg_level') }">
+        <label>Escolha o n&iacute;vel do jogo:</label>
+        <select class="ui search dropdown" name="avg_level" :class="{'input': true, 'is-danger': errors.has('avg_level') }" v-model="searchTerm.avg_level">
+          <option value="">Selecione uma das op&ccedil;&otilde;es</option>
+          <option value="1">Iniciante</option>
+          <option value="2">Intemedi&aacute;rio</option>
+          <option value="3">Semiprofissional</option>
+          <option value="4">Profissional</option>
+        </select>
+        <span v-show="errors.has('avg_level')" class="is-danger">{{ errors.first('avg_level') }}</span>
+      </div> -->
+
+      <!-- <div class="ten wide field"> -->
         <div class="ui grouped">
           <h5 class="ui header center aligned">Selecione conforme desejado:</h5>
+          <!-- <div class="grouped"> -->
           <!-- AVAILABILITY CHECKBOX -->
           <div class="two fields">
           <div class="ui checkbox field" :class="{ error: errors.has('available') }">
@@ -53,13 +70,36 @@
           </div>
           </div>
         </div>
+          <!-- </div> -->
 
+      <!-- <div class="results"> -->
+
+        <!-- {{ searchTerm }}
+        {{ currUser.games }} -->
+
+        <!-- <div v-if="!filteredGames">
+          <br>
+          <h3 class="ui header">Selecione acima seus crit&eacute;rios de busca</h3>
+        </div> -->
+
+        <!-- <div v-else> -->
+          <!-- <FilteredGames :filteredGames="filteredGames" :authUser="currUser" :fromSearch="fromSearch"/> -->
+        <!-- </div> -->
+
+      <!-- </div> -->
     </div>
   </form>
+
   <div class="results">
-    <br>
-    <div class="ui container right aligned">{{ this.filteredGames.length }} jogos encontrados</div>
-    <FilteredGames :filteredGames="filteredGames" :authUser="currUser" :fromSearch="fromSearch"/>
+    <!-- <br> -->
+    <!-- <div class="ui container right aligned">{{ this.filteredGames.length }} jogos encontrados</div> -->
+
+    <Pagination v-if="filteredGames.length" v-model="page" :items="filteredGames.length" :perPage="10" />
+
+    <FilteredGames :filteredGames="pageOfGames" :authUser="currUser" :fromSearch="fromSearch"/>
+
+    <Pagination v-if="filteredGames.length" v-model="page" :items="filteredGames.length" :perPage="10" />
+
     <div v-if="!filteredGames.length">
       <h3 class="ui segment center aligned header">Selecione acima seus crit&eacute;rios de busca</h3>
       <br>
@@ -69,15 +109,27 @@
 </template>
 
 <script>
+import Pagination from '@/components/Pagination'
+import getArraySection from '@/get-array-section'
 import FilteredGames from '@/components/Game/FilteredGames'
 import axios from '../../axios-instance'
 import moment from 'moment'
 
 export default {
   components: {
-    FilteredGames
+    FilteredGames,
+    Pagination
+  },
+  computed: {
+    pageOfGames: function () {
+      return getArraySection(this.filteredGames, this.page, 10)
+    }
   },
   props: {
+    // allGames: {
+    //   type: Array,
+    //   required: true
+    // },
     currUser: {
       type: Object,
       required: true
@@ -100,7 +152,10 @@ export default {
         price: '',
         available: '',
         ownGame: ''
+        // avg_level: ''
       },
+      // avgLevel: '',
+      // user: {},
       attrs: [
         {
           key: 'today',
@@ -113,13 +168,17 @@ export default {
           },
           dates: new Date(1, 0, 2018)
         }
-      ]
+      ],
+      page: 1
     }
   },
   beforeRouteEnter (to, from, next) {
     const token = localStorage.getItem('padel-token')
     return token ? next() : next('/login')
   },
+  // created () {
+  //   this.getUser()
+  // },
   watch: {
     searchTerm: {
       handler: function (val) {
