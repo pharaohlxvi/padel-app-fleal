@@ -27,11 +27,11 @@ export default new Router({
       path: '/login',
       component: LogInForm
     },
-    {
-      path: '/:email',
-      component: UserProfile,
-      props: true
-    },
+    // {
+    //   path: '/:email',
+    //   component: UserProfile,
+    //   props: true
+    // },
     {
       path: '/create/game',
       name: 'createGame',
