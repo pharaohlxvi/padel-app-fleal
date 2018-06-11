@@ -164,7 +164,7 @@
 </template>
 
 <script>
-import UserCard from '@/components/User/Profile/UserCard'
+// import UserCard from '@/components/User/Profile/UserCard'
 import Notification from '@/components/Notification'
 import UserSidebar from '@/components/User/UserSidebar'
 import axios from '../../axios-instance'
@@ -173,8 +173,8 @@ export default {
   name: 'ModifyGame',
   components: {
     Notification,
-    UserSidebar,
-    UserCard
+    UserSidebar
+    // UserCard
   },
   data () {
     return {

@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import UserCard from '@/components/User/Profile/UserCard'
+// import UserCard from '@/components/User/Profile/UserCard'
 import UserSidebar from '@/components/User/UserSidebar'
 import SearchGamesMenu from '@/components/Game/SearchGamesMenu'
 import axios from '../../axios-instance'
@@ -67,8 +67,8 @@ export default {
   components: {
     SearchGameForm,
     SearchGamesMenu,
-    UserSidebar,
-    UserCard
+    UserSidebar
+    // UserCard
   },
   data () {
     return {

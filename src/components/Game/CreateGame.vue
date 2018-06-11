@@ -165,7 +165,7 @@
 </template>
 
 <script>
-import UserCard from '@/components/User/Profile/UserCard'
+// import UserCard from '@/components/User/Profile/UserCard'
 import UserSidebar from '@/components/User/UserSidebar'
 import Notification from '@/components/Notification'
 import axios from '../../axios-instance'
@@ -175,8 +175,8 @@ export default {
   name: 'CreateGame',
   components: {
     Notification,
-    UserSidebar,
-    UserCard
+    UserSidebar
+    // UserCard
   },
   props: {
     currUser: {
